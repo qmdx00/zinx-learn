@@ -1,6 +1,7 @@
 package znet
 
 import (
+    "errors"
     "fmt"
     "net"
     "qmdx00.cn/zinx/ziface"
@@ -14,6 +15,16 @@ type Server struct {
     Port      int
 }
 
+// 客户端绑定的链接处理的业务
+func callBackToClient(conn *net.TCPConn, data []byte, cnt int) error {
+    fmt.Println("[Conn Handle] callBackToClient ...")
+    if _, err := conn.Write(data[:cnt]); err != nil {
+        fmt.Printf("write to client error: %v", err)
+        return errors.New("BackToClient Error")
+    }
+    return nil
+}
+
 func (s *Server) Start() {
 
     fmt.Printf("[Start] Server listener at addr: %s:%d ...\n", s.IP, s.Port)
@@ -22,42 +33,29 @@ func (s *Server) Start() {
         // 创建socket套接字
         addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
         if err != nil {
-           fmt.Println("resolve tcp addr error:", err)
-           return
+            fmt.Println("resolve tcp addr error:", err)
+            return
         }
 
         listener, err := net.ListenTCP(s.IPVersion, addr)
         if err != nil {
-           fmt.Printf("listen %s error: %v", s.IPVersion, err)
-           return
+            fmt.Printf("listen %s error: %v", s.IPVersion, err)
+            return
         }
         fmt.Printf("start zinx server %s succeed, listening ...", s.Name)
 
+        cid := 0
         // 监听TCP连接
         for {
-           conn, err := listener.AcceptTCP()
-           if err != nil {
-               fmt.Printf("Accept error: %v\n", err)
-               continue
-           }
-           // client connect succeed .
-           go func() {
-               for {
-                   buf := make([]byte, 512)
-                   cnt, err := conn.Read(buf)
-                   if err != nil {
-                       fmt.Printf("read from client error: %v", err)
-                       continue
-                   }
-
-                   fmt.Printf("[read from client]: %s\n", string(buf[:cnt]))
-
-                   if _, err := conn.Write(buf[:cnt]); err != nil {
-                       fmt.Printf("write to client error: %v", err)
-                       continue
-                   }
-               }
-           }()
+            conn, err := listener.AcceptTCP()
+            if err != nil {
+                fmt.Printf("Accept error: %v\n", err)
+                continue
+            }
+            
+            dealConn := NewConnection(conn, 1, callBackToClient)
+            cid++
+            go dealConn.Start()
         }
     }()
 }
@@ -68,9 +66,7 @@ func (s *Server) Stop() {
 
 func (s *Server) Serve() {
     s.Start()
-    select {
-
-    }
+    select {}
 }
 
 func NewServer(name string) ziface.IServer {
