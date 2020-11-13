@@ -1,7 +1,7 @@
 package main
 
 import (
-    "fmt"
+    "log"
     "net"
     "time"
 )
@@ -9,24 +9,24 @@ import (
 func main() {
     conn, err := net.Dial("tcp", "127.0.0.1:2333")
     if err != nil {
-        fmt.Println("client start error:", err)
+        log.Println("client start error:", err)
         return
     }
 
     for {
         _, err := conn.Write([]byte("hello server zinx v0.2"))
         if err != nil {
-            fmt.Println("write to server error:", err)
+            log.Println("write to server error:", err)
             return
         }
 
         buf := make([]byte, 512)
         cnt, err := conn.Read(buf)
         if err != nil {
-            fmt.Println("read from server error:", err)
+            log.Println("read from server error:", err)
             return
         }
-        fmt.Printf("[server callback]: %s\n", string(buf[:cnt]))
+        log.Printf("[server callback]: %s\n", string(buf[:cnt]))
 
         time.Sleep(time.Second)
     }

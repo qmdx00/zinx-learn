@@ -1,7 +1,7 @@
 package znet
 
 import (
-    "fmt"
+    "log"
     "net"
     "qmdx00.cn/zinx/ziface"
 )
@@ -32,8 +32,8 @@ func NewConnection(conn *net.TCPConn, connID uint32, callback ziface.HandleFunc)
 }
 
 func (c *Connection) StartReader() {
-    fmt.Println("Reader Goroutine is running ...")
-    defer fmt.Printf("[ConnID = %d] Reader is exit, Remote addr is %s", c.ConnID, c.RemoteAddr().String())
+    log.Println("Reader Goroutine is running ...")
+    defer log.Printf("[ConnID = %d] Reader is exit, Remote addr is %s", c.ConnID, c.RemoteAddr().String())
     defer c.Stop()
 
     for {
@@ -41,11 +41,11 @@ func (c *Connection) StartReader() {
         buf := make([]byte, 512)
         cnt, err := c.Conn.Read(buf)
         if err != nil {
-            fmt.Printf("receive buffer error: %v", err)
+            log.Printf("receive buffer error: %v", err)
             continue
         }
         if err := c.handleAPI(c.Conn, buf, cnt); err != nil {
-            fmt.Printf("[ConnID = %d] handle is error: %v", c.ConnID, err)
+            log.Printf("[ConnID = %d] handle is error: %v", c.ConnID, err)
             break
         }
     }
@@ -53,12 +53,12 @@ func (c *Connection) StartReader() {
 }
 
 func (c *Connection) Start() {
-    fmt.Printf("Conn Start() -- ConnID = %d", c.ConnID)
+    log.Printf("Conn Start() -- ConnID = %d", c.ConnID)
     go c.StartReader()
 }
 
 func (c *Connection) Stop() {
-    fmt.Printf("Conn Stop() -- ConnID = %d", c.ConnID)
+    log.Printf("Conn Stop() -- ConnID = %d", c.ConnID)
 
     if c.isClosed {
         return
