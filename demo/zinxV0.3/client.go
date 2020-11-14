@@ -14,7 +14,7 @@ func main() {
     }
 
     for {
-        _, err := conn.Write([]byte("hello server zinx v0.1"))
+        _, err := conn.Write([]byte("hello server zinx v0.2"))
         if err != nil {
             log.Println("write to server error:", err)
             return
