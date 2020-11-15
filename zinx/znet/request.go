@@ -3,14 +3,18 @@ package znet
 import "qmdx00.cn/zinx/ziface"
 
 type Request struct {
-    Conn ziface.IConnection
-    Data []byte
+    conn ziface.IConnection
+    msg  ziface.IMessage
 }
 
 func (r *Request) GetConn() ziface.IConnection {
-    return r.Conn
+    return r.conn
 }
 
 func (r *Request) GetData() []byte {
-    return r.Data
+    return r.msg.GetMsgData()
+}
+
+func (r *Request) GetMsgId() uint32 {
+    return r.msg.GetMsgId()
 }

@@ -25,7 +25,7 @@ func (s *Server) AddRouter(router ziface.IRouter) {
 
 func (s *Server) Start() {
     jsons, _ := json.Marshal(utils.GlobalObject)
-    log.Printf("[Zinx global config] %v", string(jsons))
+    log.Printf("[Zinx global config] %v\n", string(jsons))
 
     log.Printf("[Start] Server listener at addr: %s:%d ...\n", s.IP, s.Port)
 
@@ -39,10 +39,10 @@ func (s *Server) Start() {
 
         listener, err := net.ListenTCP(s.IPVersion, addr)
         if err != nil {
-            log.Printf("listen %s error: %v", s.IPVersion, err)
+            log.Printf("listen %s error: %v\n", s.IPVersion, err)
             return
         }
-        log.Printf("start zinx server [%s] succeed, listening ...", s.Name)
+        log.Printf("start zinx server [%s] succeed, listening ...\n", s.Name)
 
         cid := 0
         // 监听TCP连接
@@ -70,11 +70,12 @@ func (s *Server) Serve() {
 }
 
 func NewServer(name string) ziface.IServer {
-    return &Server{
+    s := &Server{
         Name:      utils.GlobalObject.Name,
         IPVersion: "tcp4",
         IP:        utils.GlobalObject.Host,
         Port:      utils.GlobalObject.TcpPort,
         Router:    nil,
     }
+    return s
 }
