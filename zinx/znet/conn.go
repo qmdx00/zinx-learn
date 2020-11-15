@@ -3,6 +3,7 @@ package znet
 import (
     "log"
     "net"
+    "qmdx00.cn/zinx/utils"
     "qmdx00.cn/zinx/ziface"
 )
 
@@ -38,7 +39,7 @@ func (c *Connection) StartReader() {
 
     for {
         // 读取数据到buff中
-        buf := make([]byte, 512)
+        buf := make([]byte, utils.GlobalObject.MaxPackSize)
         cnt, err := c.Conn.Read(buf)
         if err != nil {
             log.Printf("receive buffer error: %v", err)
