@@ -44,5 +44,4 @@ func init() {
     }
     // 自定义配置
     GlobalObject.load()
-
 }

@@ -14,7 +14,7 @@ func main() {
     }
 
     for {
-        _, err := conn.Write([]byte("hello server zinx v0.2"))
+        _, err := conn.Write([]byte("hello server zinx v0.3"))
         if err != nil {
             log.Println("write to server error:", err)
             return
@@ -26,7 +26,7 @@ func main() {
             log.Println("read from server error:", err)
             return
         }
-        log.Printf("[server callback]: %s\n", string(buf[:cnt]))
+        log.Printf("[server callback]:\n%s\n", string(buf[:cnt]))
 
         time.Sleep(time.Second)
     }

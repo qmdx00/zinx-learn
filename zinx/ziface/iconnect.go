@@ -14,7 +14,7 @@ type IConnection interface {
     // 客户端TCP状态信息 IP和端口
     RemoteAddr() net.Addr
     // 发送数据给客户端
-    Send(data []byte) error
+    SendMsg(uint32, []byte) error
 }
 
 
