@@ -12,24 +12,24 @@ import (
 type Connection struct {
     // 当前链接的套接字
     Conn *net.TCPConn
-    // 链接的ID
+    // 链接的 ID
     ConnID uint32
     // 告知当前链接是否退出
     ExitChan chan bool
-    // 当前链接Router
-    Router ziface.IRouter
+    // 当前链接 MsgHandler
+    MsgHandler ziface.IMsgHandler
 
     // 当前的链接是否关闭
     isClosed bool
 }
 
-func NewConnection(conn *net.TCPConn, connID uint32, router ziface.IRouter) *Connection {
+func NewConnection(conn *net.TCPConn, connID uint32, handler ziface.IMsgHandler) *Connection {
     return &Connection{
         Conn:     conn,
         ConnID:   connID,
         isClosed: false,
         ExitChan: make(chan bool, 1),
-        Router:   router,
+        MsgHandler:  handler,
     }
 }
 
@@ -67,11 +67,7 @@ func (c *Connection) StartReader() {
             msg:  msg,
         }
         // 将 Request 发送到 Router Handler 中处理业务
-        go func(request *Request) {
-            c.Router.PreHandler(req)
-            c.Router.Handler(req)
-            c.Router.PostHandler(req)
-        }(req)
+        go c.MsgHandler.DoMsgHandle(req)
     }
 }
 

@@ -5,5 +5,5 @@ type IServer interface {
     Stop()
     Serve()
     // 注册路由，供客户端链接处理业务
-    AddRouter(IRouter)
+    AddRouter(msgId uint32, router IRouter)
 }
