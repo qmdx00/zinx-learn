@@ -1,3 +1,3 @@
-module qmdx00.cn
+module zinx-learn
 
 go 1.15

@@ -4,7 +4,7 @@ import (
     "io"
     "log"
     "net"
-    "qmdx00.cn/zinx/znet"
+    "zinx-learn/zinx/znet"
     "time"
 )
 

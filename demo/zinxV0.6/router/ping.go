@@ -2,8 +2,8 @@ package router
 
 import (
     "log"
-    "qmdx00.cn/zinx/ziface"
-    "qmdx00.cn/zinx/znet"
+    "zinx-learn/zinx/ziface"
+    "zinx-learn/zinx/znet"
 )
 
 type PingRouter struct {

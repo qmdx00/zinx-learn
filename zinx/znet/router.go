@@ -1,6 +1,6 @@
 package znet
 
-import "qmdx00.cn/zinx/ziface"
+import "zinx-learn/zinx/ziface"
 
 // 实现router时的基础router，根据需求重写相应的方法
 type BaseRouter struct {

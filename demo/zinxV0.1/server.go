@@ -1,7 +1,7 @@
 package main
 
 import (
-    "qmdx00.cn/zinx/znet"
+    "zinx-learn/zinx/znet"
 )
 
 func main() {

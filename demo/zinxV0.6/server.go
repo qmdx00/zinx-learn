@@ -1,8 +1,8 @@
 package main
 
 import (
-    "qmdx00.cn/demo/zinxV0.6/router"
-    "qmdx00.cn/zinx/znet"
+    "zinx-learn/demo/zinxV0.6/router"
+    "zinx-learn/zinx/znet"
 )
 
 func main() {

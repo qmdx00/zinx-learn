@@ -5,8 +5,8 @@ import (
     "fmt"
     "log"
     "net"
-    "qmdx00.cn/zinx/utils"
-    "qmdx00.cn/zinx/ziface"
+    "zinx-learn/zinx/utils"
+    "zinx-learn/zinx/ziface"
 )
 
 // IServer implement

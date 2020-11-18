@@ -5,7 +5,7 @@ import (
     "io"
     "log"
     "net"
-    "qmdx00.cn/zinx/ziface"
+    "zinx-learn/zinx/ziface"
 )
 
 // IConnection implement

@@ -2,7 +2,7 @@ package znet
 
 import (
     "log"
-    "qmdx00.cn/zinx/ziface"
+    "zinx-learn/zinx/ziface"
     "strconv"
 )
 

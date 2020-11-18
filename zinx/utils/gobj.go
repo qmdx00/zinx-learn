@@ -3,7 +3,7 @@ package utils
 import (
     "encoding/json"
     "io/ioutil"
-    "qmdx00.cn/zinx/ziface"
+    "zinx-learn/zinx/ziface"
 )
 
 type GlobalObj struct {
