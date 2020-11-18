@@ -1,7 +1,7 @@
 package main
 
 import (
-    "zinx-learn/demo/zinxV0.6/router"
+    "zinx-learn/examples/zinxV0.6/router"
     "zinx-learn/zinx/znet"
 )
 
