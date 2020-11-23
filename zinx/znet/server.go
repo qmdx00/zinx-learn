@@ -11,11 +11,27 @@ import (
 
 // IServer implement
 type Server struct {
-    Name       string
-    IPVersion  string
-    IP         string
-    Port       uint
-    MsgHandler ziface.IMsgHandler
+    Name        string
+    IPVersion   string
+    IP          string
+    Port        uint
+    MsgHandler  ziface.IMsgHandler
+    ConnManager ziface.IConnManager
+    // 链接创建和停止的 Hook 函数
+    OnConnStart func(conn ziface.IConnection)
+    OnConnStop  func(conn ziface.IConnection)
+}
+
+func NewServer(name string) ziface.IServer {
+    s := &Server{
+        Name:        utils.GlobalObject.Name,
+        IPVersion:   "tcp4",
+        IP:          utils.GlobalObject.Host,
+        Port:        utils.GlobalObject.TcpPort,
+        MsgHandler:  NewMsgHandler(),
+        ConnManager: NewConnManager(),
+    }
+    return s
 }
 
 func (s *Server) AddRouter(msgId uint32, router ziface.IRouter) {
@@ -45,7 +61,7 @@ func (s *Server) Start() {
         }
         log.Printf("start zinx server [%s] succeed, listening ...\n", s.Name)
 
-        cid := 0
+        var cid uint32 = 0
         // 监听TCP连接
         for {
             conn, err := listener.AcceptTCP()
@@ -54,7 +70,12 @@ func (s *Server) Start() {
                 continue
             }
 
-            dealConn := NewConnection(conn, 1, s.MsgHandler)
+            if s.ConnManager.Size() > utils.GlobalObject.MaxConn {
+                log.Printf("Too Many Connections, Max Connections = %d\n", utils.GlobalObject.MaxConn)
+                _ = conn.Close()
+                continue
+            }
+            dealConn := NewConnection(s, conn, cid, s.MsgHandler)
             cid++
             go dealConn.Start()
         }
@@ -62,7 +83,8 @@ func (s *Server) Start() {
 }
 
 func (s *Server) Stop() {
-
+    log.Printf("[Stop] Zinx Server %s\n", s.Name)
+    s.ConnManager.Clear()
 }
 
 func (s *Server) Serve() {
@@ -70,13 +92,28 @@ func (s *Server) Serve() {
     select {}
 }
 
-func NewServer(name string) ziface.IServer {
-    s := &Server{
-        Name:       utils.GlobalObject.Name,
-        IPVersion:  "tcp4",
-        IP:         utils.GlobalObject.Host,
-        Port:       utils.GlobalObject.TcpPort,
-        MsgHandler: NewMsgHandler(),
+func (s *Server) GetConnManager() ziface.IConnManager {
+    return s.ConnManager
+}
+
+func (s *Server) SetOnConnStart(hook func(conn ziface.IConnection)) {
+    s.OnConnStart = hook
+}
+
+func (s *Server) SetOnConnStop(hook func(conn ziface.IConnection)) {
+    s.OnConnStop = hook
+}
+
+func (s *Server) CallOnConnStart(conn ziface.IConnection) {
+    if s.OnConnStart != nil {
+        log.Println("Call OnConnStart Func")
+        s.OnConnStart(conn)
     }
-    return s
+}
+
+func (s *Server) CallOnConnStop(conn ziface.IConnection) {
+    if s.OnConnStop != nil {
+        log.Println("Call OnConnStop Func")
+        s.OnConnStart(conn)
+    }
 }

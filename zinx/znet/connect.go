@@ -11,6 +11,8 @@ import (
 
 // IConnection implement
 type Connection struct {
+    // 当前 Conn 隶属于哪个 Server
+    TcpServer ziface.IServer
     // 当前链接的套接字
     Conn *net.TCPConn
     // 链接的 ID
@@ -26,8 +28,9 @@ type Connection struct {
     msgChan chan []byte
 }
 
-func NewConnection(conn *net.TCPConn, connID uint32, handler ziface.IMsgHandler) *Connection {
-    return &Connection{
+func NewConnection(server ziface.IServer, conn *net.TCPConn, connID uint32, handler ziface.IMsgHandler) *Connection {
+    c := &Connection{
+        TcpServer:  server,
         Conn:       conn,
         ConnID:     connID,
         isClosed:   false,
@@ -35,6 +38,8 @@ func NewConnection(conn *net.TCPConn, connID uint32, handler ziface.IMsgHandler)
         MsgHandler: handler,
         msgChan:    make(chan []byte),
     }
+    c.TcpServer.GetConnManager().Add(c)
+    return c
 }
 
 func (c *Connection) StartReader() {
@@ -100,18 +105,19 @@ func (c *Connection) Start() {
     log.Printf("Conn Start() -- ConnID = %d\n", c.ConnID)
     go c.StartReader()
     go c.StartWriter()
+    c.TcpServer.CallOnConnStart(c)
 }
 
 func (c *Connection) Stop() {
     log.Printf("Conn Stop() -- ConnID = %d\n", c.ConnID)
-
     if c.isClosed {
         return
     }
     c.isClosed = true
-
+    c.TcpServer.CallOnConnStop(c)
     _ = c.Conn.Close()
     c.ExitChan <- true
+    c.TcpServer.GetConnManager().Remove(c)
     close(c.ExitChan)
     close(c.msgChan)
 }
