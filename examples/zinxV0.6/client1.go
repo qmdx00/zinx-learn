@@ -48,6 +48,6 @@ func main() {
         }
         log.Printf("----> Received Message: { id = %d, len = %d, data = %s }\n", msg.GetMsgId(), msg.GetMsgLen(), string(msg.GetMsgData()))
 
-        time.Sleep(time.Millisecond)
+        time.Sleep(time.Second)
     }
 }

@@ -18,7 +18,7 @@ func main() {
     for {
         // 发送数据到服务端
         dp := znet.NewDataPack()
-        bin, err := dp.Pack(znet.NewMessage(0, []byte("zinx v0.5 client test message")))
+        bin, err := dp.Pack(znet.NewMessage(1, []byte("zinx v0.7 client1 test message")))
         if err != nil {
             log.Printf("Pack message error: %v\n", err)
             return
