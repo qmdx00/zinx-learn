@@ -5,6 +5,7 @@ import (
     "io"
     "log"
     "net"
+    "zinx-learn/zinx/utils"
     "zinx-learn/zinx/ziface"
 )
 
@@ -69,8 +70,12 @@ func (c *Connection) StartReader() {
             conn: c,
             msg:  msg,
         }
-        // 将 Request 发送到 Router Handler 中处理业务
-        go c.MsgHandler.DoMsgHandle(req)
+        if utils.GlobalObject.WorkerPoolSize > 0 {
+            c.MsgHandler.SendMsgToTaskQueue(req)
+        } else {
+            // 将 Request 发送到 Router Handler 中处理业务
+            go c.MsgHandler.DoMsgHandle(req)
+        }
     }
 }
 

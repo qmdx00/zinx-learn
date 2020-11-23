@@ -30,6 +30,7 @@ func (s *Server) Start() {
     log.Printf("[Start] Server listener at addr: %s:%d ...\n", s.IP, s.Port)
 
     go func() {
+        s.MsgHandler.StartWorkerPool()
         // 创建socket套接字
         addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
         if err != nil {

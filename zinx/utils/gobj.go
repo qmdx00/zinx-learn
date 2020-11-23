@@ -12,9 +12,11 @@ type GlobalObj struct {
     TcpPort   uint
     Name      string
 
-    Version     string
-    MaxConn     int
-    MaxPackSize uint32
+    Version        string
+    MaxConn        int
+    MaxPackSize    uint32
+    WorkerPoolSize uint32
+    MaxWorkerTask  uint32
 }
 
 var GlobalObject *GlobalObj
@@ -35,12 +37,14 @@ func (g *GlobalObj) load() {
 func init() {
     // 默认配置
     GlobalObject = &GlobalObj{
-        Name:        "ZinxServerApp",
-        Version:     "v0.4",
-        TcpPort:     2333,
-        Host:        "0.0.0.0",
-        MaxConn:     100,
-        MaxPackSize: 4096,
+        Name:           "ZinxServerApp",
+        Version:        "v0.4",
+        TcpPort:        2333,
+        Host:           "0.0.0.0",
+        MaxConn:        100,
+        MaxPackSize:    4096,
+        WorkerPoolSize: 10,
+        MaxWorkerTask:  1024,
     }
     // 自定义配置
     GlobalObject.load()
