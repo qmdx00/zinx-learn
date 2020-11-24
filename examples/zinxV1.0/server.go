@@ -17,10 +17,10 @@ func main() {
     })
     s.SetOnConnStop(func(conn ziface.IConnection) {
         log.Println("================ before conn stop ===============>")
-        if name, err := conn.GetProperty("name"); err != nil {
+        if name, err := conn.GetProperty("name"); err == nil {
             log.Printf("[Property] name = %v\n", name)
         }
-        if url, err := conn.GetProperty("github"); err != nil {
+        if url, err := conn.GetProperty("github"); err == nil {
             log.Printf("[Property] github = %v\n", url)
         }
     })
